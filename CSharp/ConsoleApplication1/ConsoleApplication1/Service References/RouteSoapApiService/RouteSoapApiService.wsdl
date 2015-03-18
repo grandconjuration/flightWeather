@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:tns="http://v2.api_internal.flighthistory.cache.conducivetech.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" name="RouteSoapApiService" targetNamespace="http://v2.api_internal.flighthistory.cache.conducivetech.com/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="https://api.flightstats.com/flex/flightstatus/docs/v2/lts/soap/routeService.xsd" namespace="http://v2.api_internal.flighthistory.cache.conducivetech.com/" />
+    </xsd:schema>
+  </types>
+  <message name="routeStatus_departing">
+    <part name="parameters" element="tns:routeStatus_departing" />
+  </message>
+  <message name="routeStatus_departingResponse">
+    <part name="parameters" element="tns:routeStatus_departingResponse" />
+  </message>
+  <message name="APIException">
+    <part name="fault" element="tns:APIException" />
+  </message>
+  <message name="routeStatus_arriving">
+    <part name="parameters" element="tns:routeStatus_arriving" />
+  </message>
+  <message name="routeStatus_arrivingResponse">
+    <part name="parameters" element="tns:routeStatus_arrivingResponse" />
+  </message>
+  <portType name="routeService">
+    <operation name="routeStatus_departing">
+      <input wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_departingRequest" message="tns:routeStatus_departing" />
+      <output wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_departingResponse" message="tns:routeStatus_departingResponse" />
+      <fault wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_departing/Fault/APIException" name="APIException" message="tns:APIException" />
+    </operation>
+    <operation name="routeStatus_arriving">
+      <input wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_arrivingRequest" message="tns:routeStatus_arriving" />
+      <output wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_arrivingResponse" message="tns:routeStatus_arrivingResponse" />
+      <fault wsam:Action="http://v2.api_internal.flighthistory.cache.conducivetech.com/routeService/routeStatus_arriving/Fault/APIException" name="APIException" message="tns:APIException" />
+    </operation>
+  </portType>
+  <binding name="routeServicePortBinding" type="tns:routeService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="routeStatus_departing">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="APIException">
+        <soap:fault use="literal" name="APIException" namespace="" />
+      </fault>
+    </operation>
+    <operation name="routeStatus_arriving">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+      <fault name="APIException">
+        <soap:fault use="literal" name="APIException" namespace="" />
+      </fault>
+    </operation>
+  </binding>
+  <service name="RouteSoapApiService">
+    <port name="routeServicePort" binding="tns:routeServicePortBinding">
+      <soap:address location="https://api.flightstats.com:443/flex/flightstatus/soap/v2/routeService" />
+    </port>
+  </service>
+</definitions>
