@@ -1,5 +1,10 @@
 package nl.gsos.jelle.simon.flightweather;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.xml.namespace.QName;
@@ -7,21 +12,56 @@ import javax.xml.ws.Service;
 
 import net.webservicex.GlobalWeather;
 import net.webservicex.GlobalWeatherSoap;
+import org.json.JSONObject;
+import org.json.JSONString;
+
 public class Client {
-	
-	public static void main(String[] args) throws Exception {
-		 
-		URL url = new URL("http://www.webservicex.com/globalweather.asmx?WSDL");
- 
+
+    public static void main(String[] args) throws Exception {
+        
+        String countryCode = "de";
+        
+        URL url;
+        InputStream is = null;
+        BufferedReader br;
+        String line;
+        String JSONString = "";
+
+        try {
+            url = new URL("http://restcountries.eu/rest/v1/alpha/"+countryCode);
+            is = url.openStream();  // throws an IOException
+            br = new BufferedReader(new InputStreamReader(is));
+
+            while ((line = br.readLine()) != null) {
+                JSONString = JSONString + line;
+            }
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException ioe) {
+                // nothing to see here
+            }
+        }
+
+        JSONObject rootOfPage = new JSONObject(JSONString);
+        String capital = rootOfPage.get("capital").toString();
+        String country = rootOfPage.get("name").toString();
+
+        url = new URL("http://www.webservicex.com/globalweather.asmx?WSDL");
+
         //1st argument service URI, refer to wsdl document above
-	//2nd argument is service name, refer to wsdl document above
+        //2nd argument is service name, refer to wsdl document above
         QName qname = new QName("http://www.webserviceX.NET", "GlobalWeather");
 
-		Service service = GlobalWeather.create(url, qname);
+        Service service = GlobalWeather.create(url, qname);
         GlobalWeatherSoap hello = service.getPort(GlobalWeatherSoap.class);
- 
-        System.out.println(hello.getWeather("Amsterdam", "Netherlands"));
- 
+
+        System.out.println(hello.getWeather(capital, country));
     }
-	
 }
