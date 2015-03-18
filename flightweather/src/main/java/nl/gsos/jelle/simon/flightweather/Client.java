@@ -5,7 +5,6 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 
-import net.webservicex.GetWeather;
 import net.webservicex.GlobalWeather;
 import net.webservicex.GlobalWeatherSoap;
 public class Client {
