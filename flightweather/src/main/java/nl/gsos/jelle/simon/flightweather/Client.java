@@ -26,83 +26,85 @@ import org.xml.sax.InputSource;
 
 public class Client {
 
-	public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws Exception {
 
-		String countryCode = "de";
+        String countryCode = "de";
 
-		URL url;
-		InputStream is = null;
-		BufferedReader br;
-		String line;
-		String JSONString = "";
+        URL url;
+        InputStream is = null;
+        BufferedReader br;
+        String line;
+        String JSONString = "";
 
-		try {
-			url = new URL("http://restcountries.eu/rest/v1/alpha/"
-					+ countryCode);
-			is = url.openStream(); // throws an IOException
-			br = new BufferedReader(new InputStreamReader(is));
+        try {
+            url = new URL("http://restcountries.eu/rest/v1/alpha/"
+                    + countryCode);
+            is = url.openStream(); // throws an IOException
+            br = new BufferedReader(new InputStreamReader(is));
 
-			while ((line = br.readLine()) != null) {
-				JSONString = JSONString + line;
-			}
-		} catch (MalformedURLException mue) {
-			mue.printStackTrace();
-		} catch (IOException ioe) {
-			ioe.printStackTrace();
-		} finally {
-			try {
-				if (is != null) {
-					is.close();
-				}
-			} catch (IOException ioe) {
-				// nothing to see here
-			}
-		}
+            while ((line = br.readLine()) != null) {
+                JSONString = JSONString + line;
+            }
+        } catch (MalformedURLException mue) {
+            mue.printStackTrace();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException ioe) {
+                // nothing to see here
+            }
+        }
 
-		JSONObject rootOfPage = new JSONObject(JSONString);
-		String capital = rootOfPage.get("capital").toString();
-		String country = rootOfPage.get("name").toString();
+        JSONObject rootOfPage = new JSONObject(JSONString);
+        String capital = rootOfPage.get("capital").toString();
+        String country = rootOfPage.get("name").toString();
 
-		url = new URL("http://www.webservicex.com/globalweather.asmx?WSDL");
+        url = new URL("http://www.webservicex.com/globalweather.asmx?WSDL");
 
 		// 1st argument service URI, refer to wsdl document above
-		// 2nd argument is service name, refer to wsdl document above
-		QName qname = new QName("http://www.webserviceX.NET", "GlobalWeather");
+        // 2nd argument is service name, refer to wsdl document above
+        QName qname = new QName("http://www.webserviceX.NET", "GlobalWeather");
 
-		Service service = GlobalWeather.create(url, qname);
-		GlobalWeatherSoap hello = service.getPort(GlobalWeatherSoap.class);
+        Service service = GlobalWeather.create(url, qname);
+        GlobalWeatherSoap hello = service.getPort(GlobalWeatherSoap.class);
 
-		String response = hello.getWeather(capital, country);
-		System.out.println(response);
+        String response = hello.getWeather(capital, country);
+        //System.out.println(response);
 
-		DocumentBuilder db = DocumentBuilderFactory.newInstance()
-				.newDocumentBuilder();
-		InputSource inputS = new InputSource();
-		inputS.setCharacterStream(new StringReader(response));
+        DocumentBuilder db = DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder();
+        InputSource inputS = new InputSource();
+        inputS.setCharacterStream(new StringReader(response));
 
-		Document doc = db.parse(inputS);
+        Document doc = db.parse(inputS);
 
-		doc.getDocumentElement().normalize();
+        doc.getDocumentElement().normalize();
 
-		NodeList l = doc.getElementsByTagName("*");
+        NodeList l = doc.getElementsByTagName("*");
 
-		for (int temp = 0; temp < l.getLength(); temp++) {
+        JSONObject obj = new JSONObject();
+        
+        for (int temp = 0; temp < l.getLength(); temp++) {
 
-			Node nNode = l.item(temp);
+            Node nNode = l.item(temp);
 
-		//	System.out.println("\nCurrent Element :" + nNode.getNodeName());
+            //	System.out.println("\nCurrent Element :" + nNode.getNodeName());
+            if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
-			if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                Element eElement = (Element) nNode;
+                if (nNode.getNodeName().trim().equals("Wind") && nNode.getNodeName().trim().equals("Temperature") && nNode.getNodeName().trim().equals("RelativeHumidity") && nNode.getNodeName().trim().equals("Visibility") && nNode.getNodeName().trim().equals("DewPoint") && nNode.getNodeName().trim().equals("Pressure")) {
+                    obj.put(nNode.getNodeName().trim(),eElement.getTextContent());
+                }
+            }
+        }
+        obj.put("capital",capital);
+        obj.put("country",country);
+        obj.put("code",countryCode);
+        System.out.println(obj);
 
-				Element eElement = (Element) nNode;
-				if (nNode.getNodeName().trim() == "Temperature") {
-					System.out.println("Temperature:"
-							+ eElement.getTextContent());
-				}
-
-			}
-		}
-
-
-	}
+    }
 }
