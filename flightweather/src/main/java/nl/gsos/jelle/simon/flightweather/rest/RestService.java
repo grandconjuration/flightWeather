@@ -53,8 +53,7 @@ public class RestService {
         String JSONString = "";
 
         try {
-            url = new URL("http://restcountries.eu/rest/v1/alpha/"
-                    + code);
+            url = new URL("http://restcountries.eu/rest/v1/alpha/"+ code);
             is = url.openStream(); // throws an IOException
             br = new BufferedReader(new InputStreamReader(is));
 
@@ -112,7 +111,7 @@ public class RestService {
             if (nNode.getNodeType() == Node.ELEMENT_NODE) {
 
                 Element eElement = (Element) nNode;
-                if (nNode.getNodeName().trim().equals("Wind") && nNode.getNodeName().trim().equals("Temperature") && nNode.getNodeName().trim().equals("RelativeHumidity") && nNode.getNodeName().trim().equals("Visibility") && nNode.getNodeName().trim().equals("DewPoint") && nNode.getNodeName().trim().equals("Pressure")) {
+                if (nNode.getNodeName().trim().equals("Wind") || nNode.getNodeName().trim().equals("Temperature") || nNode.getNodeName().trim().equals("RelativeHumidity") || nNode.getNodeName().trim().equals("Visibility") || nNode.getNodeName().trim().equals("DewPoint") || nNode.getNodeName().trim().equals("Pressure")) {
                     obj.put(nNode.getNodeName().trim(),eElement.getTextContent());
                 }
             }
@@ -120,7 +119,8 @@ public class RestService {
         obj.put("capital",capital);
         obj.put("country",country);
         obj.put("code",code);
-        return Response.status(200).entity(obj).build();
+        String output = obj.toString();
+        return Response.status(200).entity(output).build();
     }
     
     
