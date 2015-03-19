@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -36,13 +37,12 @@ import org.xml.sax.SAXException;
  *
  * @author simon
  */
-@Path("/countrycode/{code}")
+@Path("countrycode/{code}")
 public class RestService {
     
     @GET
     @Produces("application/json")
-    public JSONObject WeatherByCode(@PathParam("code") String code) throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
-        String countryCode = "de";
+    public Response WeatherByCode(@PathParam("code") String code) throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
 
         URL url;
         InputStream is = null;
@@ -52,7 +52,7 @@ public class RestService {
 
         try {
             url = new URL("http://restcountries.eu/rest/v1/alpha/"
-                    + countryCode);
+                    + code);
             is = url.openStream(); // throws an IOException
             br = new BufferedReader(new InputStreamReader(is));
 
@@ -117,8 +117,8 @@ public class RestService {
         }
         obj.put("capital",capital);
         obj.put("country",country);
-        obj.put("code",countryCode);
-        return obj;
+        obj.put("code",code);
+        return Response.status(200).entity(obj).build();
     }
     
     
