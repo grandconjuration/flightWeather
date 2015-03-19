@@ -112,7 +112,7 @@ public class RestService {
 
                 Element eElement = (Element) nNode;
                 if (nNode.getNodeName().trim().equals("Wind") || nNode.getNodeName().trim().equals("Temperature") || nNode.getNodeName().trim().equals("RelativeHumidity") || nNode.getNodeName().trim().equals("Visibility") || nNode.getNodeName().trim().equals("DewPoint") || nNode.getNodeName().trim().equals("Pressure")) {
-                    obj.put(nNode.getNodeName().trim(),eElement.getTextContent());
+                    obj.put(nNode.getNodeName().trim(),eElement.getTextContent().trim());
                 }
             }
         }
