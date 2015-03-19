@@ -17,6 +17,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -37,11 +38,12 @@ import org.xml.sax.SAXException;
  *
  * @author simon
  */
-@Path("countrycode/{code}")
+@Path("service/")
+@Produces(MediaType.APPLICATION_JSON)
 public class RestService {
     
     @GET
-    @Produces("application/json")
+    @Path("weatherbycode/{code}")
     public Response WeatherByCode(@PathParam("code") String code) throws MalformedURLException, ParserConfigurationException, SAXException, IOException {
 
         URL url;
